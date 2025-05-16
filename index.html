@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        // Apply theme based on localStorage or system preference before page load to prevent FOUC
+        // This script needs to be in the <head> to execute before the body renders.
+        function applyTheme() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+        applyTheme(); // Call it immediately
+    </script>
+    <style>
+        /* Apply Inter font to the body */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styles for a slightly more polished look */
+        .report-link-item:hover {
+            transform: translateY(-2px);
+            /* Light mode hover shadow */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .dark .report-link-item:hover {
+            /* Dark mode hover shadow */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.25);
+        }
+        .report-link-item {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        /* Theme Toggle Styles */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+        }
+        .theme-switch {
+            display: inline-block;
+            height: 24px; /* Reduced height */
+            position: relative;
+            width: 44px; /* Reduced width */
+        }
+        .theme-switch input {
+            display:none;
+        }
+        .slider {
+            background-color: #ccc;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+        }
+        .slider:before {
+            background-color: #fff;
+            bottom: 3px; /* Adjusted for smaller size */
+            content: "";
+            height: 18px; /* Reduced size */
+            left: 3px; /* Adjusted for smaller size */
+            position: absolute;
+            transition: .4s;
+            width: 18px; /* Reduced size */
+        }
+        input:checked + .slider {
+            background-color: #4F46E5; /* Indigo, or your preferred dark mode accent */
+        }
+        .dark input:checked + .slider {
+            background-color: #6366F1; /* Lighter Indigo for dark mode */
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px); /* Adjusted for smaller size */
+        }
+        .slider.round {
+            border-radius: 24px; /* Adjusted for smaller size */
+        }
+        .slider.round:before {
+            border-radius: 50%;
+        }
+        .theme-switch-icon {
+            margin-left: 8px; /* Space between toggle and icon */
+            width: 20px; /* Adjust size as needed */
+            height: 20px; /* Adjust size as needed */
+        }
+        /* Status Badge Styles */
+        .status-badge-passed {
+            background-color: #D1FAE5; /* Tailwind green-100 */
+            color: #065F46; /* Tailwind green-800 */
+        }
+        .dark .status-badge-passed {
+            background-color: #064E3B; /* Tailwind green-900 */
+            color: #A7F3D0; /* Tailwind green-200 */
+        }
+        .status-badge-failed {
+            background-color: #FEE2E2; /* Tailwind red-100 */
+            color: #991B1B; /* Tailwind red-800 */
+        }
+        .dark .status-badge-failed {
+            background-color: #7F1D1D; /* Tailwind red-900 */
+            color: #FECACA; /* Tailwind red-200 */
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
+    <header class="bg-white dark:bg-gray-800 shadow-md">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-700 dark:text-gray-100">Reports Dashboard</h1>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">Access your latest reports and analytics.</p>
+            </div>
+            <div class="theme-switch-wrapper">
+                <label class="theme-switch" for="themeSwitchCheckbox">
+                    <input type="checkbox" id="themeSwitchCheckbox" />
+                    <span class="slider round"></span>
+                </label>
+                <svg id="themeIcon" class="theme-switch-icon text-yellow-500 dark:text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                </svg>
+            </div>
+        </div>
+    </header>
+    <main class="container mx-auto px-6 py-8">
+        <section>
+            <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-100 mb-6">Available Reports</h2>
+            <div class="flex flex-col space-y-6">
+                <a href="./reports/community-wallet-service-report.html" class="report-link-item block bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-xl w-full md:w-2/3 lg:w-1/2 mx-auto">
+                    <div class="flex items-center mb-3">
+                        <svg class="w-8 h-8 text-blue-500 dark:text-blue-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">Issuance / Verification flows for community-wallet</h3>
+                    </div>
+                    <p class="report-generation-date text-gray-600 dark:text-gray-400 text-sm mb-3">Generated: </p>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4">An e2e test suite for issuance and verification flows with community-wallet.</p>
+                    <div class="flex items-center justify-between">
+                        <span class="status-badge-passed inline-block px-3 py-1 text-xs font-bold rounded-full">PASSED</span>
+                        <span class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium">View Report &rarr;</span>
+                    </div>
+                </a>
+                <a href="./reports/enterprise-wallet-service-report.html" class="report-link-item block bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-xl w-full md:w-2/3 lg:w-1/2 mx-auto">
+                    <div class="flex items-center mb-3">
+                        <svg class="w-8 h-8 text-green-500 dark:text-green-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">Issuance / Verification flows for enterprise-wallet</h3>
+                    </div>
+                    <p class="report-generation-date text-gray-600 dark:text-gray-400 text-sm mb-3">Generated: </p>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4">An e2e test suite for issuance and verification flows with enterprise-wallet.</p>
+                    <div class="flex items-center justify-between">
+                        <span class="status-badge-passed inline-block px-3 py-1 text-xs font-bold rounded-full">PASSED</span>
+                        <span class="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 font-medium">View Report &rarr;</span>
+                    </div>
+                </a>
+                <a href="./reports/credential-status-report.html" class="report-link-item block bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-xl w-full md:w-2/3 lg:w-1/2 mx-auto">
+                    <div class="flex items-center mb-3">
+                        <svg class="w-8 h-8 text-purple-500 dark:text-purple-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">Credential status</h3>
+                    </div>
+                    <p class="report-generation-date text-gray-600 dark:text-gray-400 text-sm mb-3">Generated: </p>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4">An e2e test suite for credential status service - bitstring, status-list2021, revocation-list2020, token-status-list.</p>
+                    <div class="flex items-center justify-between">
+                        <span class="status-badge-passed inline-block px-3 py-1 text-xs font-bold rounded-full">PASSED</span>
+                        <span class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 font-medium">View Report &rarr;</span>
+                    </div>
+                </a>
+                <a href="./reports/miscellaneous-report.html" class="report-link-item block bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-xl w-full md:w-2/3 lg:w-1/2 mx-auto">
+                    <div class="flex items-center mb-3">
+                        <svg class="w-8 h-8 text-yellow-500 dark:text-yellow-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">Miscellaneous</h3>
+                    </div>
+                    <p class="report-generation-date text-gray-600 dark:text-gray-400 text-sm mb-3">Generated: </p>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4">Other tests - issuer-metadata, verifier-metadata, did-store, api-key, id-cache, issuer-status-callback.</p>
+                    <div class="flex items-center justify-between">
+                        <span class="status-badge-passed inline-block px-3 py-1 text-xs font-bold rounded-full">PASSED</span>
+                        <span class="text-yellow-600 dark:text-yellow-400 hover:text-yellow-800 dark:hover:text-yellow-300 font-medium">View Report &rarr;</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-white dark:bg-gray-800 border-t dark:border-gray-700 mt-12">
+        <div class="container mx-auto px-6 py-4 text-center text-gray-600 dark:text-gray-400 text-sm">
+            &copy; <span id="currentYear"></span> walt.id &copy; All rights reserved.
+            <p>Powered by Awesome Reporting Tool</p>
+        </div>
+    </footer>
+    <script>
+    // --- Theme Management ---
+    const themeToggle = document.getElementById('themeSwitchCheckbox');
+    const themeIcon = document.getElementById('themeIcon');
+    const sunIconPath = "M12 3v1m0 16v1m8.66-15.66l-.707.707M4.04 19.96l-.707.707M21 12h-1M4 12H3m15.66 8.66l-.707-.707M4.04 4.04l-.707-.707";
+    const moonIconPath = "M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z";
+
+    function setIcon(isDarkMode) {
+        if (isDarkMode) {
+            themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${moonIconPath}"></path>`;
+            themeIcon.classList.remove('text-yellow-500');
+            themeIcon.classList.add('text-yellow-300');
+        } else {
+            themeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${sunIconPath}"></path>`;
+            themeIcon.classList.remove('text-yellow-300');
+            themeIcon.classList.add('text-yellow-500');
+        }
+    }
+
+    function applyAndSaveTheme(isDarkMode) {
+        if (isDarkMode) {
+            document.documentElement.classList.add('dark');
+            localStorage.theme = 'dark';
+        } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.theme = 'light';
+        }
+        themeToggle.checked = isDarkMode;
+        setIcon(isDarkMode);
+    }
+
+    // Initialize theme and toggle state
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    let currentThemeIsDark;
+    if (localStorage.theme === 'dark') {
+        currentThemeIsDark = true;
+    } else if (localStorage.theme === 'light') {
+        currentThemeIsDark = false;
+    } else {
+        currentThemeIsDark = prefersDark; // Default to system preference if no localStorage
+    }
+    applyAndSaveTheme(currentThemeIsDark); // Applies theme and sets initial toggle state + icon
+
+    // Event listener for the toggle
+    themeToggle.addEventListener('change', () => {
+        applyAndSaveTheme(themeToggle.checked);
+    });
+
+    // Listen for changes in OS color scheme preference (if no manual override)
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+        // Only update if localStorage is not set (i.e., user hasn't manually toggled)
+        if (!('theme' in localStorage)) {
+            applyAndSaveTheme(event.matches);
+        }
+    });
+
+    // --- Report Date Management ---
+    function setReportGenerationDates() {
+        const today = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = today.toLocaleDateString('en-US', options);
+        const dateElements = document.querySelectorAll('.report-generation-date');
+        dateElements.forEach(element => {
+            // Ensure we don't add the date multiple times if script runs again
+            if (!element.textContent.includes(',')) { // Simple check if date is already there
+                element.textContent += formattedDate;
+            }
+        });
+    }
+
+    // Set current year in footer
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // Call functions when the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        setReportGenerationDates();
+        // Theme is already initialized by the script in <head> and refined by the script above.
+        // The DOMContentLoaded here is mainly for setReportGenerationDates.
+    });
+    </script>
+</body>
+
+</html>
